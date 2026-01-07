@@ -11,7 +11,13 @@ interface GameRepository {
     // Retorna uma lista simples, pois é uma ação pontual (Request/Response)
     suspend fun searchRemoteGames(query: String): Result<List<Game>>
 
+    // Usado quando clica num resultado da busca (RAWG API)
+    suspend fun getGameDetailsRemote(gameId: Long): Result<Game>
+
     // (Room Database) ---
+    // Usado quando clica num item da sua biblioteca
+    suspend fun getGameByIdLocal(gameId: Long): Flow<Game?>
+
     // Observa os jogos salvos.
     fun getSavedGames(): Flow<List<Game>>
 
