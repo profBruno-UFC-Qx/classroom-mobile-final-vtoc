@@ -3,28 +3,27 @@
 # Proposta de aplicativo
 
 ## Equipe
-* **Nome do Aluno(a) 1:** [Seu nome e matrícula]
-* **Nome do Aluno(a) 2:** [Seu nome e matrícula]
-* **Nome do Aluno(a) 3:** [Seu nome e matrícula]
-* ...
+* **Nome do Aluno(a) 1:** Matheus Conrado Pires - 536536
+* **Nome do Aluno(a) 2:** Jorge Eduardo Silva Sousa - 542051
 
 ---
 
 ## Título do Projeto
-[Escolha um título criativo e descritivo para o seu projeto.]
+**GameTracker**
 
 ## Descrição do Projeto
-[Descreva em 2-3 parágrafos o que o seu projeto faz. Qual é o problema que ele resolve? Quem é o público-alvo? Quais são as principais funcionalidades?]
+O **GameTracker** é um aplicativo Android nativo desenvolvido para ajudar jogadores a organizarem sua coleção de jogos e combaterem a desorganização do "backlog". Ele resolve o problema comum de esquecer quais jogos foram comprados mas nunca iniciados, ou perder o controle de quais títulos estão em andamento.
+
+O público-alvo são jogadores que utilizam múltiplas plataformas e desejam centralizar seu progresso em um único lugar. Através do aplicativo, o usuário pode buscar informações atualizadas de jogos (usando a API do RAWG.io), adicionar títulos à sua biblioteca pessoal e categorizá-los conforme o momento atual (jogando, zerado, na fila).
 
 ---
 
 ## Funcionalidades Principais
-[Liste as principais funcionalidades do projeto. Use caixas de seleção para que a equipe possa marcar as concluídas nas próximas etapas.]
 
-- [ ] Funcionalidade 1: [Breve descrição da funcionalidade]
-- [ ] Funcionalidade 2: [Breve descrição da funcionalidade]
-- [ ] Funcionalidade 3: [Breve descrição da funcionalidade]
-- [ ] ...
+- [ ] **Busca de Jogos (API):** Integração com a API do RAWG para pesquisar jogos por nome e visualizar capa, título e plataformas.
+- [ ] **Minha Biblioteca (Room):** Persistência de dados local para salvar jogos favoritos e acessá-los mesmo offline.
+- [ ] **Gerenciamento de Status:** Opção para categorizar jogos em "Backlog", "Jogando", "Zerado" ou "Abandonado".
+- [ ] **Listagem e Filtros:** Visualização em lista com barra de pesquisa interna e filtros dinâmicos (ex: mostrar apenas jogos "Em andamento").
 
 ---
 
