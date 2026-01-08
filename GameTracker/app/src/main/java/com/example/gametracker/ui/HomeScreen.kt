@@ -4,18 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.compose.koinInject
 import com.example.gametracker.data.repository.FakeGameRepository
 import com.example.gametracker.domain.model.Game
 import com.example.gametracker.ui.components.*
 
 @Composable
-fun HomeScreen(onGameClick: (Long) -> Unit) {
-    val repository = remember { FakeGameRepository() }
+fun HomeScreen(
+    repository: FakeGameRepository = koinInject(),
+    onGameClick: (Long) -> Unit
+) {
+
     var allGames by remember { mutableStateOf(emptyList<Game>()) }
     var searchText by remember { mutableStateOf("") }
     var showFilterDialog by remember { mutableStateOf(false) }
@@ -36,7 +38,7 @@ fun HomeScreen(onGameClick: (Long) -> Unit) {
         searchQuery = searchText,
         onSearchQueryChange = { searchText = it },
         onFilterClick = { showFilterDialog = true },
-        headerContent = { }, // SEM ABAS AQUI
+        headerContent = { },
         content = {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(filteredGames) { game ->

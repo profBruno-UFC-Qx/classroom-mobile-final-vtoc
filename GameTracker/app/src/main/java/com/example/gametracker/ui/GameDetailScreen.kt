@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import org.koin.compose.koinInject
 import com.example.gametracker.data.repository.FakeGameRepository
 import com.example.gametracker.domain.model.Game
 import com.example.gametracker.domain.model.GameStatus
@@ -19,8 +20,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameDetailScreen(gameId: Long, onBack: () -> Unit) {
-    val repository = remember { FakeGameRepository() }
+fun GameDetailScreen(
+    gameId: Long,
+    repository: FakeGameRepository = koinInject(),
+    onBack: () -> Unit
+) {
+
     val scope = rememberCoroutineScope()
     var game by remember { mutableStateOf<Game?>(null) }
 
