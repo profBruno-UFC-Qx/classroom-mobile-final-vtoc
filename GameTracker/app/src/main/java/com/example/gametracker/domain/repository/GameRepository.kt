@@ -16,7 +16,7 @@ interface GameRepository {
 
     // (Room Database) ---
     // Usado quando clica num item da sua biblioteca
-    suspend fun getGameByIdLocal(gameId: Long): Flow<Game?>
+    fun getGameByIdLocal(gameId: Long): Flow<Game?>
 
     // Observa os jogos salvos.
     fun getSavedGames(): Flow<List<Game>>
