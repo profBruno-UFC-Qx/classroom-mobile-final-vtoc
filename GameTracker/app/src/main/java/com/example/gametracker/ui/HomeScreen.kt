@@ -43,7 +43,7 @@ fun HomeScreen(
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(filteredGames) { game ->
                     Box(Modifier.clickable { onGameClick(game.id) }) {
-                        GameItemCard(game)
+                        GameItemCard(game=game, showStatus = false)
                     }
                 }
             }

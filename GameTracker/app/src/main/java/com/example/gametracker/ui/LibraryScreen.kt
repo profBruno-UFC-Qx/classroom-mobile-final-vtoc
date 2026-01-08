@@ -78,7 +78,7 @@ fun LibraryScreen(
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(finalGames) { game ->
                         Box(modifier = Modifier.clickable { onGameClick(game.id) }) {
-                            GameItemCard(game)
+                            GameItemCard(game=game, showStatus = true)
                         }
                     }
                 }

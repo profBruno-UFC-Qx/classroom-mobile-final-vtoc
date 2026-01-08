@@ -23,8 +23,8 @@ class FakeGameRepository : GameRepository {
         Game(2, "God of War Ragnarök", "Kratos e Atreus...", "https://upload.wikimedia.org/wikipedia/en/e/ee/God_of_War_Ragnar%C3%B6k_cover.jpg", "2022", 94, listOf("Action"), listOf("PS5"), 40),
         Game(3, "Hollow Knight", "Um metroidvania sombrio.", "https://upload.wikimedia.org/wikipedia/en/0/04/Hollow_Knight_first_cover_art.webp", "2017", 90, listOf("Indie", "Platformer"), listOf("PC", "Switch"), 30),
         Game(4, "Cyberpunk 2077", "RPG futurista.", "https://upload.wikimedia.org/wikipedia/en/9/9f/Cyberpunk_2077_box_art.jpg", "2020", 86, listOf("RPG", "FPS"), listOf("PC", "PS5"), 60),
-        Game(5, "Elden Ring", "Mundo aberto Soulslike.", "https://upload.wikimedia.org/wikipedia/en/b/b9/Elden_Ring_Box_Art.jpg", "2022", 96, listOf("RPG"), listOf("PC", "Xbox"), 100),
-        Game(6, "Stardew Valley", "Fazendinha relaxante.", "https://upload.wikimedia.org/wikipedia/en/f/fd/Stardew_Valley.jpg", "2016", 89, listOf("Indie", "Sim"), listOf("Switch", "PC"), 500)
+        Game(5, "Elden Ring", "Mundo aberto Soulslike.", "https://upload.wikimedia.org/wikipedia/pt/0/0d/Elden_Ring_capa.jpg", "2022", 96, listOf("RPG"), listOf("PC", "Xbox"), 100),
+        Game(6, "Stardew Valley", "Fazendinha relaxante.", "https://upload.wikimedia.org/wikipedia/en/f/fd/Logo_of_Stardew_Valley.png", "2016", 89, listOf("Indie", "Sim"), listOf("Switch", "PC"), 500)
     )
 
     suspend fun getPopularGames(): Result<List<Game>> {
@@ -44,7 +44,7 @@ class FakeGameRepository : GameRepository {
         return if (game != null) Result.success(game) else Result.failure(Exception("Not found"))
     }
 
-    override suspend fun getGameByIdLocal(gameId: Long): Flow<Game?> {
+    override fun getGameByIdLocal(gameId: Long): Flow<Game?> {
         return _localLibrary.map { list -> list.find { it.id == gameId } }
     }
 
