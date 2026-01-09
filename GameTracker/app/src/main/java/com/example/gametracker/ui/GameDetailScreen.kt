@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gametracker.domain.model.Game
@@ -181,8 +182,15 @@ fun GameDetailScreen(
 
                     Text("Sobre o Jogo", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(8.dp))
+
+                    val rawDescription = currentGame.description ?: "Sem descrição disponível."
+
+                    val formattedDescription = remember(rawDescription) {
+                        HtmlCompat.fromHtml(rawDescription, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+                    }
+
                     Text(
-                        text = currentGame.description ?: "Sem descrição disponível.",
+                        text = formattedDescription,
                         style = MaterialTheme.typography.bodyMedium,
                         lineHeight = 24.sp,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
@@ -215,9 +223,7 @@ fun GameDetailScreen(
                                     repository.saveGameToLibrary(currentGame.copy(status = GameStatus.BACKLOG))
                                 } else {
                                     // Futuro: Poderia abrir menu de edição. Por enquanto apenas re-salva.
-                                    // repository.saveGameToLibrary(currentGame)
                                 }
-                                // onBack()
                             }
                         },
                         modifier = Modifier.fillMaxWidth().height(50.dp),
