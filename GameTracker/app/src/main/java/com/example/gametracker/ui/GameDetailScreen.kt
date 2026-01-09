@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.gametracker.data.repository.FakeGameRepository
 import com.example.gametracker.domain.model.Game
 import com.example.gametracker.domain.model.GameStatus
+import com.example.gametracker.domain.repository.GameRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
@@ -42,7 +42,7 @@ import java.util.*
 @Composable
 fun GameDetailScreen(
     gameId: Long,
-    repository: FakeGameRepository = koinInject(),
+    repository: GameRepository = koinInject(),
     onBack: () -> Unit
 ) {
     val scope = rememberCoroutineScope()

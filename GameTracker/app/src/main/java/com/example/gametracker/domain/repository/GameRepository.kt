@@ -9,7 +9,7 @@ interface GameRepository {
     // (RAWG API)
     // Busca jogos na API para a tela de "Adicionar Novo"
     // Retorna uma lista simples, pois é uma ação pontual (Request/Response)
-    suspend fun searchRemoteGames(query: String): Result<List<Game>>
+    suspend fun searchRemoteGames(query: String = ""): Result<List<Game>>
 
     // Usado quando clica num resultado da busca (RAWG API)
     suspend fun getGameDetailsRemote(gameId: Long): Result<Game>

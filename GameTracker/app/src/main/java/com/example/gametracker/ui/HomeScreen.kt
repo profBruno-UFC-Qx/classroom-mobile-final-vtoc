@@ -8,13 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
-import com.example.gametracker.data.repository.FakeGameRepository
 import com.example.gametracker.domain.model.Game
+import com.example.gametracker.domain.repository.GameRepository
 import com.example.gametracker.ui.components.*
 
 @Composable
 fun HomeScreen(
-    repository: FakeGameRepository = koinInject(),
+    repository: GameRepository = koinInject(),
     onGameClick: (Long) -> Unit
 ) {
 
@@ -25,7 +25,7 @@ fun HomeScreen(
     var selectedPlatforms by remember { mutableStateOf(setOf<String>()) }
 
     LaunchedEffect(Unit) {
-        allGames = repository.getPopularGames().getOrDefault(emptyList())
+        allGames = repository.searchRemoteGames().getOrDefault(emptyList())
     }
 
     val filteredGames = allGames.filter { game ->

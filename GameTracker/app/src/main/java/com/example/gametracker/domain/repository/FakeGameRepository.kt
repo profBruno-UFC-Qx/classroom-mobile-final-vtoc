@@ -1,4 +1,4 @@
-package com.example.gametracker.data.repository
+package com.example.gametracker.domain.repository
 
 import com.example.gametracker.domain.model.Game
 import com.example.gametracker.domain.model.GameStatus

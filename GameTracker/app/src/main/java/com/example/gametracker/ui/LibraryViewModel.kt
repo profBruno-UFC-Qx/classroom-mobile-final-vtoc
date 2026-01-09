@@ -2,9 +2,9 @@ package com.example.gametracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.gametracker.data.repository.FakeGameRepository
 import com.example.gametracker.domain.model.Game
 import com.example.gametracker.domain.model.GameStatus
+import com.example.gametracker.domain.repository.GameRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class LibraryViewModel(
-    private val repository: FakeGameRepository
+    private val repository: GameRepository
 ) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")

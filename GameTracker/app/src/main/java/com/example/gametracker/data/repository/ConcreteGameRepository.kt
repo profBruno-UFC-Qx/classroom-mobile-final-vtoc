@@ -44,7 +44,7 @@ class ConcreteGameRepository(
         }
     }
 
-    override suspend fun getGameByIdLocal(gameId: Long): Flow<Game?> {
+    override fun getGameByIdLocal(gameId: Long): Flow<Game?> {
         return dao.getGameByIdFlow(gameId).map { entity ->
             entity?.toDomain()
         }
