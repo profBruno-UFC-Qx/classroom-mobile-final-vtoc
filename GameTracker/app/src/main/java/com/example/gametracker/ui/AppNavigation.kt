@@ -2,12 +2,14 @@ package com.example.gametracker.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -19,6 +21,7 @@ fun GameTrackerApp() {
     val navController = rememberNavController()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavigationBar {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -36,7 +39,7 @@ fun GameTrackerApp() {
                     }
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.List, contentDescription = null) },
+                    icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
                     label = { Text("Minha Lista") },
                     selected = currentDestination?.hierarchy?.any { it.route == "library" } == true,
                     onClick = {
@@ -59,4 +62,14 @@ fun GameTrackerApp() {
             }
         }
     }
+}
+@Preview(showBackground = true, name = "Light Mode")
+@Preview(
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, // Força modo escuro
+    name = "Dark Mode"
+)
+@Composable
+fun AppPreview(){
+    GameTrackerApp()
 }

@@ -1,6 +1,8 @@
 package com.example.gametracker.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,17 +23,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gametracker.domain.model.Game
+import com.example.gametracker.ui.theme.DarkCardBorder
 
 @Composable
 fun GameItemCard(
     game: Game,
     showStatus: Boolean = false
 ) {
+    val isDark = isSystemInDarkTheme()
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp),
         shape = RoundedCornerShape(12.dp),
+        border = if (isDark) BorderStroke(1.dp, DarkCardBorder) else null,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {

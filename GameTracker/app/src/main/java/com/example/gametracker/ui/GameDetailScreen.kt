@@ -246,7 +246,7 @@ fun GameDetailScreen(
                             text = "Adicionado em: ${format.format(date)}",
                             style = MaterialTheme.typography.labelSmall,
                             modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp),
-                            color = Color.Gray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -265,7 +265,7 @@ fun InfoItem(icon: ImageVector, value: String, label: String) {
         Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         Spacer(Modifier.height(4.dp))
         Text(value, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
-        Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
