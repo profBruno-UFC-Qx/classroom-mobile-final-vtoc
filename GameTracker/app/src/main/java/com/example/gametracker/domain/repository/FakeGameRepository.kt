@@ -73,4 +73,12 @@ class FakeGameRepository : GameRepository {
     override suspend fun deleteGame(gameId: Long) {
         _localLibrary.update { list -> list.filterNot { it.id == gameId } }
     }
+
+    override suspend fun updateReview(gameId: Long, rating: Int?, notes: String?) {
+        _localLibrary.update { list ->
+            list.map {
+                if (it.id == gameId) it.copy(userRating = rating, notes = notes) else it
+            }
+        }
+    }
 }

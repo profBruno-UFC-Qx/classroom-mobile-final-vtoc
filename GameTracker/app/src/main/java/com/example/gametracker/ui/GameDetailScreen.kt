@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
@@ -34,6 +35,7 @@ import coil.request.ImageRequest
 import com.example.gametracker.domain.model.Game
 import com.example.gametracker.domain.model.GameStatus
 import com.example.gametracker.domain.repository.GameRepository
+import com.example.gametracker.ui.components.EditGameDialog
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
@@ -47,6 +49,8 @@ fun GameDetailScreen(
     onBack: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+
+    var showEditDialog by remember { mutableStateOf(false) }
 
     var remoteGame by remember { mutableStateOf<Game?>(null) }
     LaunchedEffect(gameId) {
@@ -136,13 +140,35 @@ fun GameDetailScreen(
                                 else -> MaterialTheme.colorScheme.secondary
                             }
 
-                            AssistChip(
-                                onClick = { /* Futuro: Abrir Dialog para mudar status */ },
-                                label = { Text(currentGame.status.name) },
-                                leadingIcon = {
-                                    Icon(Icons.Default.Info, contentDescription = null, tint = statusColor)
+                            var showStatusMenu by remember { mutableStateOf(false) }
+                            Box {
+                                AssistChip(
+                                    onClick = { showStatusMenu = true },
+                                    label = { Text(currentGame.status.name) },
+                                    leadingIcon = {
+                                        Icon(Icons.Default.Info, contentDescription = null, tint = statusColor)
+                                    },
+                                    trailingIcon = {
+                                        Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = statusColor)
+                                    }
+                                )
+                                DropdownMenu(
+                                    expanded = showStatusMenu,
+                                    onDismissRequest = { showStatusMenu = false }
+                                ) {
+                                    GameStatus.values().forEach { statusOption ->
+                                        DropdownMenuItem(
+                                            text = { Text(statusOption.name) },
+                                            onClick = {
+                                                scope.launch {
+                                                    repository.updateGameStatus(currentGame.id, statusOption)
+                                                    showStatusMenu = false
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
-                            )
+                            }
                         } else {
                             Text("Não está na sua lista", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                         }
@@ -153,15 +179,13 @@ fun GameDetailScreen(
                     }
 
                     Spacer(Modifier.height(16.dp))
-
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         InfoItem(Icons.Default.DateRange, "${currentGame.averagePlaytime ?: "?"} h", "Tempo")
-                        InfoItem(Icons.Default.Star, "${currentGame.userRating ?: "-"} / 5", "Nota")
+                        InfoItem(Icons.Default.Star, "${currentGame.userRating ?: "-"} / 5", "Sua Nota")
                         InfoItem(Icons.Default.DateRange, currentGame.releaseDate?.take(4) ?: "N/A", "Ano")
                     }
 
                     HorizontalDivider(Modifier.padding(vertical = 16.dp))
-
                     Text("Gêneros", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(currentGame.genres) { genre ->
@@ -170,7 +194,6 @@ fun GameDetailScreen(
                     }
 
                     Spacer(Modifier.height(8.dp))
-
                     Text("Plataformas", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(currentGame.platforms) { platform ->
@@ -179,12 +202,10 @@ fun GameDetailScreen(
                     }
 
                     HorizontalDivider(Modifier.padding(vertical = 16.dp))
-
                     Text("Sobre o Jogo", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(8.dp))
 
                     val rawDescription = currentGame.description ?: "Sem descrição disponível."
-
                     val formattedDescription = remember(rawDescription) {
                         HtmlCompat.fromHtml(rawDescription, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
                     }
@@ -197,7 +218,6 @@ fun GameDetailScreen(
                     )
 
                     Spacer(Modifier.height(24.dp))
-
                     if (isAddedToLibrary && !currentGame.notes.isNullOrEmpty()) {
                         Card(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -222,21 +242,21 @@ fun GameDetailScreen(
                                 if (!isAddedToLibrary) {
                                     repository.saveGameToLibrary(currentGame.copy(status = GameStatus.BACKLOG))
                                 } else {
-                                    // Futuro: Poderia abrir menu de edição. Por enquanto apenas re-salva.
+                                    showEditDialog = true
                                 }
                             }
                         },
                         modifier = Modifier.fillMaxWidth().height(50.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isAddedToLibrary) Color(0xFF4CAF50) else MaterialTheme.colorScheme.primary
+                            containerColor = if (isAddedToLibrary) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
                         )
                     ) {
                         Icon(
-                            if (isAddedToLibrary) Icons.Default.Check else Icons.Default.Add,
+                            if (isAddedToLibrary) Icons.Default.Edit else Icons.Default.Add,
                             contentDescription = null
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text(if (isAddedToLibrary) "Salvo na Lista" else "Adicionar à Minha Lista")
+                        Text(if (isAddedToLibrary) "Avaliar / Editar" else "Adicionar à Minha Lista")
                     }
 
                     if (isAddedToLibrary && currentGame.addedAt > 0) {
@@ -256,6 +276,24 @@ fun GameDetailScreen(
                 CircularProgressIndicator()
             }
         }
+    }
+
+    if (showEditDialog && gameDisplay != null) {
+        EditGameDialog(
+            currentRating = gameDisplay.userRating,
+            currentNotes = gameDisplay.notes,
+            onDismiss = { showEditDialog = false },
+            onSave = { newRating, newNotes ->
+                scope.launch {
+                    repository.updateReview(
+                        gameId = gameDisplay.id,
+                        rating = newRating,
+                        notes = newNotes
+                    )
+                    showEditDialog = false
+                }
+            }
+        )
     }
 }
 

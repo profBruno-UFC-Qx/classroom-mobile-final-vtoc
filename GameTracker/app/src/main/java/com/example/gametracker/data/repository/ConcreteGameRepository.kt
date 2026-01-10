@@ -67,6 +67,10 @@ class ConcreteGameRepository(
         dao.updateGameStatus(gameId, newStatus)
     }
 
+    override suspend fun updateReview(gameId: Long, rating: Int?, notes: String?) {
+        dao.updateReview(gameId, rating, notes)
+    }
+
     override suspend fun deleteGame(gameId: Long) {
         val entity = dao.getGameById(gameId)
         if (entity != null) {

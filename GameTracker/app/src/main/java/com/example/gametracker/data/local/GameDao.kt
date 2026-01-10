@@ -26,4 +26,7 @@ interface GameDao {
 
     @Query("UPDATE games SET status = :newStatus WHERE id = :gameId")
     suspend fun updateGameStatus(gameId: Long, newStatus: GameStatus)
+
+    @Query("UPDATE games SET userRating = :rating, notes = :notes WHERE id = :gameId")
+    suspend fun updateReview(gameId: Long, rating: Int?, notes: String?)
 }
