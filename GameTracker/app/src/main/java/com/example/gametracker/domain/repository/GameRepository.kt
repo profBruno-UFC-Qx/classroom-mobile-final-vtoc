@@ -30,6 +30,9 @@ interface GameRepository {
     // Atualiza o status (Ex: de Backlog -> Playing)
     suspend fun updateGameStatus(gameId: Long, newStatus: GameStatus)
 
+    // Atualiza o rating e review
+    suspend fun updateReview(gameId: Long, rating: Int?, notes: String?)
+
     // Remove do backlog
     suspend fun deleteGame(gameId: Long)
 }

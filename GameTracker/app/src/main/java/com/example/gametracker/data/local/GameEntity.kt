@@ -11,13 +11,25 @@ data class GameEntity(
     val coverUrl: String?,
     val description: String?,
     val status: GameStatus,
+    val userRating: Int? = null,
+    val notes: String? = null,
     val genres: List<String>,
     val platforms: List<String>,
     val addedAt: Long = System.currentTimeMillis()
 )
 
 fun GameEntity.toDomain() = com.example.gametracker.domain.model.Game(
-    id = id, title = title, coverUrl = coverUrl, description = description,
-    status = status, genres = genres, platforms = platforms, addedAt = addedAt,
-    metacritic = null, releaseDate = null, averagePlaytime = null
+    id = id,
+    title = title,
+    coverUrl = coverUrl,
+    description = description,
+    status = status,
+    genres = genres,
+    platforms = platforms,
+    addedAt = addedAt,
+    userRating = userRating,
+    notes = notes,
+    metacritic = null,
+    releaseDate = null,
+    averagePlaytime = null
 )
