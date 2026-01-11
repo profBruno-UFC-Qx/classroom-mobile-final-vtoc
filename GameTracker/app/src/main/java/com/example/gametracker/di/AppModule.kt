@@ -6,6 +6,7 @@ import com.example.gametracker.data.local.GameDatabase
 import com.example.gametracker.data.repository.ConcreteGameRepository
 import com.example.gametracker.domain.repository.GameRepository
 import com.example.gametracker.ui.LibraryViewModel
+import com.example.gametracker.ui.viewmodel.HomeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.koin.core.module.dsl.viewModel
@@ -46,8 +47,11 @@ val appModule = module {
         )
     }
 
-    // LibraryViewModel
     viewModel {
         LibraryViewModel(repository = get())
+    }
+
+    viewModel {
+        HomeViewModel(repository = get())
     }
 }

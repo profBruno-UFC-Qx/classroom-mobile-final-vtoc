@@ -3,48 +3,70 @@ package com.example.gametracker.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.koin.compose.koinInject
-import com.example.gametracker.domain.model.Game
-import com.example.gametracker.domain.repository.GameRepository
+import org.koin.androidx.compose.koinViewModel
 import com.example.gametracker.ui.components.*
+import com.example.gametracker.ui.viewmodel.HomeViewModel
+import com.example.gametracker.utils.GameFilterMaps
 
 @Composable
 fun HomeScreen(
-    repository: GameRepository = koinInject(),
+    viewModel: HomeViewModel = koinViewModel(),
     onGameClick: (Long) -> Unit
 ) {
-
-    var allGames by remember { mutableStateOf(emptyList<Game>()) }
-    var searchText by remember { mutableStateOf("") }
     var showFilterDialog by remember { mutableStateOf(false) }
-    var selectedGenres by remember { mutableStateOf(setOf<String>()) }
-    var selectedPlatforms by remember { mutableStateOf(setOf<String>()) }
 
-    LaunchedEffect(Unit) {
-        allGames = repository.searchRemoteGames().getOrDefault(emptyList())
-    }
-
-    val filteredGames = allGames.filter { game ->
-        (searchText.isEmpty() || game.title.contains(searchText, ignoreCase = true)) &&
-                (selectedGenres.isEmpty() || game.genres.any { it in selectedGenres }) &&
-                (selectedPlatforms.isEmpty() || game.platforms.any { it in selectedPlatforms })
-    }
+    val games = viewModel.games
+    val isLoading = viewModel.isLoading
+    val searchText = viewModel.searchQuery
 
     BaseGameListScreen(
         searchQuery = searchText,
-        onSearchQueryChange = { searchText = it },
+        onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
         onFilterClick = { showFilterDialog = true },
         headerContent = { },
         content = {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(filteredGames) { game ->
-                    Box(Modifier.clickable { onGameClick(game.id) }) {
-                        GameItemCard(game=game, showStatus = false)
+            if (games.isEmpty() && !isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Nenhum jogo encontrado.", color = Color.Gray)
+                }
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                itemsIndexed(games) { index, game ->
+                    if (index >= games.lastIndex - 1 && !isLoading) {
+                        LaunchedEffect(Unit) {
+                            viewModel.loadNextPage()
+                        }
                     }
+
+                    Box(Modifier.clickable { onGameClick(game.id) }) {
+                        GameItemCard(game = game, showStatus = false)
+                    }
+                }
+
+                if (isLoading && games.isNotEmpty()) {
+                    item {
+                        Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+            if (isLoading && games.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
                 }
             }
         }
@@ -53,13 +75,28 @@ fun HomeScreen(
     if (showFilterDialog) {
         GameFilterDialog(
             onDismiss = { showFilterDialog = false },
-            onClear = { selectedGenres = emptySet(); selectedPlatforms = emptySet() },
+            onClear = {
+                viewModel.onFiltersChanged(emptySet(), emptySet())
+            },
             sections = listOf(
-                FilterSectionModel("Gênero", listOf("RPG", "Action", "Adventure", "Indie"), selectedGenres.toList()) {
-                    selectedGenres = if (it in selectedGenres) selectedGenres - it else selectedGenres + it
+                FilterSectionModel(
+                    "Gênero",
+                    GameFilterMaps.genres.keys.toList().sorted(),
+                    viewModel.selectedGenres.toList()
+                ) { clickedGenre ->
+                    val current = viewModel.selectedGenres
+                    val newSet = if (clickedGenre in current) current - clickedGenre else current + clickedGenre
+                    viewModel.onFiltersChanged(newSet, viewModel.selectedPlatforms)
                 },
-                FilterSectionModel("Plataforma", listOf("PC", "PS5", "Switch", "Xbox"), selectedPlatforms.toList()) {
-                    selectedPlatforms = if (it in selectedPlatforms) selectedPlatforms - it else selectedPlatforms + it
+
+                FilterSectionModel(
+                    "Plataforma",
+                    GameFilterMaps.platforms.keys.toList(),
+                    viewModel.selectedPlatforms.toList()
+                ) { clickedPlatform ->
+                    val current = viewModel.selectedPlatforms
+                    val newSet = if (clickedPlatform in current) current - clickedPlatform else current + clickedPlatform
+                    viewModel.onFiltersChanged(viewModel.selectedGenres, newSet)
                 }
             )
         )
