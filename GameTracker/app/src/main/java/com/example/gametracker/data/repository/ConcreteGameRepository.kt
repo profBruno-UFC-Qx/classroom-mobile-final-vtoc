@@ -18,9 +18,20 @@ class ConcreteGameRepository(
 ) : GameRepository {
 
     // API
-    override suspend fun searchRemoteGames(query: String): Result<List<Game>> {
+    override suspend fun searchRemoteGames(
+        query: String?,
+        genres: String?,
+        platforms: String?,
+        page: Int
+    ): Result<List<Game>> {
         return try {
-            val response = api.searchGames(apiKey, query)
+            val response = api.searchGames(
+                apiKey = apiKey,
+                query = query,
+                genres = genres,
+                platforms = platforms,
+                page = page
+            )
             val games = response.results.map { it.toDomain() }
             Result.success(games)
         } catch (e: Exception) {

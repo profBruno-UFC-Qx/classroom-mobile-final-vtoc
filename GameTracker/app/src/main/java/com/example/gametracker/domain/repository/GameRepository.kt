@@ -6,28 +6,32 @@ import kotlinx.coroutines.flow.Flow
 
 interface GameRepository {
 
-    // (RAWG API)
-    // Busca jogos na API para a tela de "Adicionar Novo"
-    // Retorna uma lista simples, pois é uma ação pontual (Request/Response)
-    suspend fun searchRemoteGames(query: String = ""): Result<List<Game>>
+    // RAWG API
+    // Busca jogos na API
+    suspend fun searchRemoteGames(
+        query: String?,
+        genres: String?,
+        platforms: String?,
+        page: Int
+    ): Result<List<Game>>
 
-    // Usado quando clica num resultado da busca (RAWG API)
+    // Usado quando clica num resultado da HomePage
     suspend fun getGameDetailsRemote(gameId: Long): Result<Game>
 
-    // (Room Database) ---
+    // Room
     // Usado quando clica num item da sua biblioteca
     fun getGameByIdLocal(gameId: Long): Flow<Game?>
 
     // Observa os jogos salvos.
     fun getSavedGames(): Flow<List<Game>>
 
-    // Filtra jogos locais (Ex: só os que estou "Jogando")
+    // Filtra jogos locais
     fun getGamesByStatus(status: GameStatus): Flow<List<Game>>
 
-    // Salva um jogo da busca para o seu banco local
+    // Salva um jogo da busca para o banco local (biblioteca)
     suspend fun saveGameToLibrary(game: Game)
 
-    // Atualiza o status (Ex: de Backlog -> Playing)
+    // Atualiza o status
     suspend fun updateGameStatus(gameId: Long, newStatus: GameStatus)
 
     // Atualiza o rating e review

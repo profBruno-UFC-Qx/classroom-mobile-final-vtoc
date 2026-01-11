@@ -9,7 +9,10 @@ interface RawgApi {
     @GET("games")
     suspend fun searchGames(
         @Query("key") apiKey: String,
-        @Query("search") query: String,
+        @Query("search") query: String?,
+        @Query("genres") genres: String?,
+        @Query("platforms") platforms: String?,
+        @Query("page") page: Int,
         @Query("page_size") pageSize: Int = 20
     ): GamesResponse
 
